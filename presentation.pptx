@@ -1,0 +1,102 @@
+import os
+import requests
+from pptx import Presentation
+from pptx.util import Inches
+
+# Define the presentation file name and path
+presentation_file = 'my_presentation.pptx'
+presentation_path = os.path.join(os.getcwd(), presentation_file)
+
+# Create a new PowerPoint presentation
+prs = Presentation()
+
+# Define the slide layout
+title_slide_layout = prs.slide_layouts[0]
+
+# Create the title slide
+title_slide = prs.slides.add_slide(title_slide_layout)
+title = title_slide.shapes.title
+title.text = "Organizational Culture Analysis"
+
+# Task i: Define organizational culture
+slide = prs.slides.add_slide(prs.slide_layouts[1])
+title = slide.shapes.title
+title.text = "Task i: Define organizational culture"
+
+citation = input("Enter the citation and reference for a source on organizational culture: ")
+definition = input("Provide your own definition of organizational culture in your own words: ")
+
+paragraph = slide.placeholders[1].text_frame.add_paragraph()
+paragraph.text = f"Citation and reference: {citation}"
+paragraph = slide.placeholders[1].text_frame.add_paragraph()
+paragraph.text = f"Definition: {definition}"
+
+# Task ii: Identify the culture through metaphors
+slide = prs.slides.add_slide(prs.slide_layouts[1])
+title = slide.shapes.title
+title.text = "Task ii: Identify the culture through metaphors"
+
+organization = input("Choose an organization: ")
+metaphors = [
+    "A well-oiled machine",
+    "A family",
+    "A sports team",
+    "A circus",
+]
+
+bullet_slide_layout = prs.slide_layouts[1]
+bullet_slide = prs.slides.add_slide(bullet_slide_layout)
+shapes = bullet_slide.shapes
+
+title_shape = shapes.title
+title_shape.text = f"{organization} Culture Metaphors"
+
+body_shape = shapes.placeholders[1]
+tf = body_shape.text_frame
+
+for metaphor in metaphors:
+    p = tf.add_paragraph()
+    p.text = metaphor
+
+# Task iii: Identify artifacts
+slide = prs.slides.add_slide(prs.slide_layouts[1])
+title = slide.shapes.title
+title.text = "Task iii: Identify artifacts"
+
+organization = input("Choose an organization: ")
+
+# Define the image file names and URLs
+image_files = [
+    ('building.jpg', 'https://example.com/building.jpg'),
+    ('artwork.jpg', 'https://example.com/artwork.jpg'),
+    ('logo.jpg', 'https://example.com/logo.jpg'),
+]
+
+bullet_slide_layout = prs.slide_layouts[1]
+bullet_slide = prs.slides.add_slide(bullet_slide_layout)
+shapes = bullet_slide.shapes
+
+title_shape = shapes.title
+title_shape.text = f"{organization} Artifacts"
+
+body_shape = shapes.placeholders[1]
+tf = body_shape.text_frame
+
+for image_file, image_url in image_files:
+    # Download the image from the URL
+    response = requests.get(image_url)
+    image_path = os.path.join(os.getcwd(), image_file)
+    with open(image_path, 'wb') as f:
+        f.write(response.content)
+
+    # Add the image to the slide
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    left = Inches(1)
+    top = Inches(1)
+    pic = slide.shapes.add_picture(image_path, left, top)
+
+    # Add a description of the artifact
+    p = tf.add_paragraph()
+    p.text = f"{image_file}: {organization} {image_file}"
+
+# Task iv: Identify organizational language, research organizational stories and language
